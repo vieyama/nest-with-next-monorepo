@@ -18,6 +18,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { MenuType } from "@/interface/menu";
 import { addMenu, editMenu, useFetchMenu } from "@/services/menu";
 import { Skeleton } from "../ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const formSchema = z.object({
     parentId: z.string(),
@@ -28,6 +29,8 @@ export const formSchema = z.object({
 
 export default function DashboardComponent() {
     const queryClient = useQueryClient();
+    const isMobile = useIsMobile()
+
     const dispatch = useDispatch();
     const [parentId, setParentId] = useState<string>()
     const { data, isLoading } = useFetchMenu();
@@ -93,10 +96,18 @@ export default function DashboardComponent() {
         form.reset({ actionType: '', depth: 0, name: '', parentId: '' })
     }
 
+    const marginLeftData = useMemo(() => {
+        if (isMobile) {
+            return 'ml-0'
+        } else {
+            return expanded ? 'ml-64' : 'ml-24'
+        }
+    }, [expanded, isMobile])
+
     return (
         <div className="flex h-screen p-5">
             <Sidebar />
-            <main className={`flex-1 transition-all duration-300 ${expanded ? 'ml-64' : 'ml-24'}`}>
+            <main className={`flex-1 transition-all duration-300 ${marginLeftData}`}>
                 {/* breadcrum */}
                 <div className="flex gap-3 items-center h-[84px] top-0 pt-16 pb-8 fixed w-full bg-white z-40">
                     <Image src="/folder.svg" width={24} height={24} alt="folder icon" />
@@ -121,7 +132,7 @@ export default function DashboardComponent() {
                         </Select>
                     </form>
 
-                    <div className="grid grid-cols-2 grid-rows-1 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 grid-rows-1 gap-4">
                         <div className="p-4 w-full mt-5">
                             <div className="flex gap-4 mb-4">
                                 <button onClick={expandAll} className="bg-[#1D2939] text-white px-5 py-2 rounded-full text-sm">

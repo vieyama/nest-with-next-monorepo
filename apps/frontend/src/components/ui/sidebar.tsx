@@ -5,45 +5,57 @@ import { Button } from "@/components/ui/button";
 import Image from 'next/image';
 import { collapse, expand, sidebarExpanded } from '@/store/reducer/sidebarSlice';
 import { useSelector, useDispatch } from 'react-redux';
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export function Sidebar() {
     const expanded = useSelector(sidebarExpanded);
     const dispatch = useDispatch();
+    const isMobile = useIsMobile()
 
     const handleExpand = () => {
         dispatch(expanded ? collapse() : expand())
     }
 
     return (
-        <div
-            className={cn(
-                "h-[95vh] rounded-3xl fixed bg-[#101828] text-white transition-all duration-300",
-                expanded ? "w-60" : "w-20"
-            )}
-        >
-            <div className={`p-7 flex items-center ${expanded ? 'justify-between' : 'justify-center'}`}>
-                <div className="flex items-center gap-2">
-                    {expanded && <Image src="/logo.svg" width={70} height={21} alt="logo" />}
-                </div>
+        isMobile ?
+            <div className="fixed top-[10px] left-[10px] z-50">
                 <Button
                     variant="ghost"
                     size="icon"
-                    onClick={handleExpand}
                     className="hover:bg-white/10"
                 >
-                    <Image src={expanded ? "/collapse.svg" : "expand-white.svg"} width={24} height={24} alt="logo" />
+                    <Image src={"expand-black.svg"} width={24} height={24} alt="logo" />
                 </Button>
-            </div>
+            </div > 
+            : <div
+                className={cn(
+                    "h-[95vh] rounded-3xl fixed bg-[#101828] text-white transition-all duration-300",
+                    expanded ? "w-60" : "w-20"
+                )}
+            >
+                <div className={`p-7 flex items-center ${expanded ? 'justify-between' : 'justify-center'}`}>
+                    <div className="flex items-center gap-2">
+                        {expanded && <Image src="/logo.svg" width={70} height={21} alt="logo" />}
+                    </div>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleExpand}
+                        className="hover:bg-white/10"
+                    >
+                        <Image src={expanded ? "/collapse.svg" : "expand-white.svg"} width={24} height={24} alt="logo" />
+                    </Button>
+                </div>
 
-            <nav className="mt-4">
-                <MenuItem
-                    expanded={expanded}
-                    icon='menu-icon-black'
-                    label="Menus"
-                    active={true}
-                />
-            </nav>
-        </div>
+                <nav className="mt-4">
+                    <MenuItem
+                        expanded={expanded}
+                        icon='menu-icon-black'
+                        label="Menus"
+                        active={true}
+                    />
+                </nav>
+            </div>
     );
 }
 
