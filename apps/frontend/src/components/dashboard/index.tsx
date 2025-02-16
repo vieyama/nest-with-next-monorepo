@@ -3,10 +3,9 @@
 
 import { Sidebar } from "@/components/ui/sidebar";
 import { sidebarExpanded } from "@/store/reducer/sidebarSlice";
-import { collapse, expand } from "@/store/reducer/expandNodeSlice"
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import TreeView from "@/components/dashboard/tree-view";
 import Select from "@/components/ui/select";
 import { MenuForm } from "./form";
@@ -15,7 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "@/hooks/use-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { MenuType } from "@/interface/menu";
+import { MenuType, TreeNode } from "@/interface/menu";
 import { addMenu, editMenu, useFetchMenu } from "@/services/menu";
 import { Skeleton } from "../ui/skeleton";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -31,7 +30,6 @@ export default function DashboardComponent() {
     const queryClient = useQueryClient();
     const isMobile = useIsMobile()
 
-    const dispatch = useDispatch();
     const [parentId, setParentId] = useState<string>()
     const { data, isLoading } = useFetchMenu();
 
@@ -69,22 +67,6 @@ export default function DashboardComponent() {
         resolver: zodResolver(formSchema),
         defaultValues: { parentId: '', depth: 0, name: '', actionType: 'add' },
     });
-
-    const expandAll = () => {
-        dispatch(expand())
-    };
-
-    const collapseAll = () => {
-        dispatch(collapse())
-    };
-
-    const getAllNodes = (nodes: any[], expandedState: Record<string, boolean> = {}) => {
-        nodes.forEach((node) => {
-            expandedState[node.title] = true;
-            if (node.children) getAllNodes(node.children, expandedState);
-        });
-        return expandedState;
-    };
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
         const { depth, actionType, ...filteredData } = data
@@ -134,18 +116,13 @@ export default function DashboardComponent() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 grid-rows-1 gap-4">
                         <div className="p-4 w-full mt-5">
-                            <div className="flex gap-4 mb-4">
-                                <button onClick={expandAll} className="bg-[#1D2939] text-white px-5 py-2 rounded-full text-sm">
-                                    Expand All
-                                </button>
-                                <button onClick={collapseAll} className="border border-[#1D2939] px-5 py-2 rounded-full text-sm">
-                                    Collapse All
-                                </button>
-                            </div>
-                            {isLoading ? <div className="space-y-2 mt-2">
-                                <Skeleton className="h-4 w-[250px]" />
-                                <Skeleton className="h-4 w-[200px]" />
-                            </div> : <TreeView data={(dataMenu ?? []) as MenuType[]} form={form} />}
+                            {isLoading ?
+                                <div className="space-y-2 mt-2">
+                                    <Skeleton className="h-4 w-[250px]" />
+                                    <Skeleton className="h-4 w-[200px]" />
+                                </div>
+                                :
+                                <TreeView data={(dataMenu ?? []) as TreeNode[]} form={form} />}
                         </div>
                         <MenuForm form={form} onSubmit={onSubmit} />
                     </div>

@@ -8,7 +8,7 @@ export type MenuType = {
 }
 
 export type TreeNode = {
-    id?: string
+    id: string
     name: string
     children?: TreeNode[]
 }
@@ -31,6 +31,8 @@ export type TreeNodeProps = {
     node: TreeNode
     isLast: boolean
     handleAction: (data: TreeNode, type: ActionType) => void
+    expandedNodes: Set<string>;
+    toggleNode: (title: string) => void;
 }
 
 export type ParamsMenu = {
