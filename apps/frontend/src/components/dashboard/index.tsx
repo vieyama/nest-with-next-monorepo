@@ -41,7 +41,7 @@ export default function DashboardComponent() {
         }
         const menu = data?.filter((item: { id: string; }) => item.id === parentId)
         return menu
-    }, [data, data?.length, parentId])
+    }, [data, parentId])
 
     const addMutation = useMutation({
         mutationFn: addMenu,
