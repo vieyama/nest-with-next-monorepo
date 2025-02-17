@@ -1,5 +1,3 @@
-"use client"
-
 import { UseFormReturn } from "react-hook-form"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
@@ -16,7 +14,7 @@ import { formSchema } from "."
 import { type FormValueType } from "@/interface/menu"
 
 export function MenuForm({ form, onSubmit }: {
-    form: UseFormReturn<FormValueType, any, undefined>,
+    form: UseFormReturn<FormValueType>,
     onSubmit: (data: z.infer<typeof formSchema>) => Promise<void>
 }) {
     const action = form.getValues('actionType')

@@ -1,4 +1,3 @@
-
 'use client'
 
 import { Sidebar } from "@/components/ui/sidebar";
@@ -69,12 +68,14 @@ export default function DashboardComponent() {
     });
 
     const onSubmit = async (data: z.infer<typeof formSchema>) => {
-        const { depth, actionType, ...filteredData } = data
+        const { actionType, ...filteredData } = data;
+        
         if (actionType === 'add') {
             addMutation.mutate(filteredData)
         } else {
             editMutation.mutate(filteredData)
         }
+
         form.reset({ actionType: '', depth: 0, name: '', parentId: '' })
     }
 

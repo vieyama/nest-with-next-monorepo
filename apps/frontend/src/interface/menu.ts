@@ -22,7 +22,7 @@ export type FormValueType = {
 
 export type TreeViewProps = {
     data: TreeNode[]
-    form: UseFormReturn<FormValueType, any, undefined>
+    form: UseFormReturn<FormValueType>
 }
 
 export type ActionType = 'add' | 'edit' | 'delete'
